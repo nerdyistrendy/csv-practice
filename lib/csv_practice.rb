@@ -3,20 +3,17 @@ require 'awesome_print'
 
 def get_all_olympic_athletes(filename)
   athlete_array = []
+  required_fields = %w[ID Name Height Team Year City Sport Event Medal]
 
-  CSV.read(filename, headers: true).each do |athlete|
-    athlete_array << {"ID" => athlete["ID"],
-                     "Name" => athlete["Name"],
-                     "Height" => athlete["Height"],
-                     "Team" => athlete["Team"],
-                     "Year" => athlete["Year"],
-                     "City" => athlete["City"],
-                     "Sport" => athlete["Sport"],
-                     "Event" => athlete["Event"],
-                      "Medal" => athlete["Medal"]}
+  CSV.read(filename, headers: true).map { |row| row.to_h }.each do |athlete|
+    athlete_array << athlete.select {|k, v| required_fields.include?(k)}
   end
+
   return athlete_array
 end
+
+
+
 
 def total_medals_per_team(olympic_data)
   medalists = []
@@ -47,5 +44,4 @@ def get_all_gold_medalists(olympic_data)
   end
   return gold_medalists
 end
-
-# total_medals_per_team(get_all_olympic_athletes('../data/athlete_events1.csv' ))
+# get_all_olympic_athletes('../data/athlete_events1.csv' )
